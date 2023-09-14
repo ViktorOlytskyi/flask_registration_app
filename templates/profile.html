@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.username }}!</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% <endf></endf>or %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <form method="POST" action="/profile">
+        <label for="new_password">New Password:</label>
+        <input type="password" id="new_password" name="new_password" required><br>
+        <input type="submit" value="Change Password">
+    </form>
+    <p><a href="/logout">Logout</a></p>
+</body>
+</html>
