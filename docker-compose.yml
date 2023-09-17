@@ -10,3 +10,19 @@ services:
       - .:/application
     ports:
       - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "311991"
+      MYSQL_DATABASE: flask_app
+    ports:
+      - "3307:3306"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:

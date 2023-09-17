@@ -4,9 +4,11 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.models import db, User
 
+
 app = Flask(__name__)
 app.secret_key = 'FFFFDDDDSSSS'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://viktor:311991@db:3306/flask_app?charset=utf8mb4'
 db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
