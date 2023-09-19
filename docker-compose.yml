@@ -15,8 +15,10 @@ services:
     networks:
       - mynetwork
   db:
-    image: mysql:latest
+    image: mysql:8.0
     environment:
+      MYSQL_USER: 'viktor'
+      MYSQL_PASSWORD: "311991"
       MYSQL_ROOT_PASSWORD: "311991"
       MYSQL_DATABASE: flask_app
     ports:

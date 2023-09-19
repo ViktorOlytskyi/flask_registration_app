@@ -2,13 +2,15 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models.models import db, User
+# from models.models import User
 
 
 app = Flask(__name__)
 app.secret_key = 'FFFFDDDDSSSS'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://viktor:311991@db:3306/flask_app?charset=utf8mb4'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://viktor:311991@db:3306/flask_app?charset=utf8mb4'
+# app.config['SQLALCHEMY_DATABASE_URI'] = mysql+pymysql
+db = SQLAlchemy()
 db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -67,6 +69,7 @@ def register():
 
 if __name__ == '__main__':
     with app.app_context():
+        from models.models import User
         db.create_all()
     app.run(debug=True)
 
