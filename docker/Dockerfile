@@ -5,4 +5,4 @@ RUN apt-get update && apt-get install -y pkg-config libmariadb-dev-compat gcc
 #RUN apt-get update && apt-get install -y pkg-config libmysqlclient-dev
 RUN pip install flask Flask-SQLAlchemy Flask-Login Jinja2 mysqlclient mysql-connector-python pymysql cryptography
 
-CMD ./wait-for-it.sh db:3306 - flask run --host=0.0.0.0 --port=8082
+CMD ./wait-for-it.sh db:3306 -- flask run --host=0.0.0.0 --port=8082

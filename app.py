@@ -82,8 +82,11 @@ def register():
             flash('Username already exists. Please choose a different one.', 'danger')
     return render_template('register.html')
 
+
+with app.app_context():
+    db.create_all()
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+
     app.run(debug=True)
 
