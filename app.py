@@ -2,18 +2,33 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-# from models.models import User
+# from models.models import User, db
+
+
 
 
 app = Flask(__name__)
 app.secret_key = 'FFFFDDDDSSSS'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://viktor:311991@db:3306/flask_app?charset=utf8mb4'
-# app.config['SQLALCHEMY_DATABASE_URI'] = mysql+pymysql
+
 db = SQLAlchemy()
 db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True)
+    password = db.Column(db.String(120))
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -69,7 +84,6 @@ def register():
 
 if __name__ == '__main__':
     with app.app_context():
-        from models.models import User
         db.create_all()
     app.run(debug=True)
 
