@@ -1,13 +1,45 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_uploads import UploadNotAllowed
+
 from app import app, db
-from models.models import User
+from forms.forms import ProductForm
+from models.models import User, Product
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
+@app.route('/products', methods=['GET', 'POST'])
+@login_required
+def products():
+    form = ProductForm()
+    if form.validate_on_submit():
+        product = Product(
+            name=form.name.data,
+            description=form.description.data,
+            user_id=current_user.id
+        )
+
+        if form.image.data:
+            try:
+                filename = form.image.data.filename
+                form.image.data.save('uploads/' + filename)
+                product.image = filename
+            except UploadNotAllowed:
+                flash('Invalid file format. Please upload an image.', 'danger')
+                return redirect(url_for('products'))
+
+        db.session.add(product)
+        db.session.commit()
+        flash('Product created successfully', 'success')
+        return redirect(url_for('products'))
+
+    products = Product.query.filter_by(user_id=current_user.id).all()
+    return render_template('products.html', form=form, products=products)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
