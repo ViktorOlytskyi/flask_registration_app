@@ -27,7 +27,7 @@ def products():
         if form.image.data:
             try:
                 filename = form.image.data.filename
-                form.image.data.save('uploads/' + filename)
+                form.image.data.save('static/uploads/' + filename)
                 product.image = filename
             except :
                 flash('Invalid file format. Please upload an image.', 'danger')
