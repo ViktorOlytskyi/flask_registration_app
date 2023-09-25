@@ -5,14 +5,12 @@ from flask_migrate import Migrate
 app = Flask(__name__)
 app.secret_key = 'FFFFDDDDSSSS'
 
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://viktor:311991@db:3306/flask_app?charset=utf8mb4'
 db = SQLAlchemy()
 db.init_app(app)
+migrate = Migrate(app, db)
 
 import routes.routes
-with app.app_context():
-    db.create_all()
+
 if __name__ == '__main__':
     app.run(debug=True)
-
