@@ -39,7 +39,7 @@ def products():
         return redirect(url_for('products'))
 
     products = Product.query.filter_by(user_id=current_user.id).all()
-    return render_template('products.html', form=form, products=products)
+    return render_template('products.html', form=form, products=products, user=current_user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

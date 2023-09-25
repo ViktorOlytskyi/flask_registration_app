@@ -1,25 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Profile</title>
-</head>
-<body>
-    <h1>Welcome, {{ user.username }}!</h1>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<h1>Hello, {{ user.username }}!</h1>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+<div>
     <form method="POST" action="/profile">
-        <label for="new_password">New Password:</label>
-        <input type="password" id="new_password" name="new_password" required><br>
-        <input type="submit" value="Change Password">
+        <div class="mb-3">
+            <label for="new_password" class="form-label">New Password:</label>
+            <input type="password" class="form-control" id="new_password" name="new_password" required>
+            <div id="passHelp" class="form-text">You can change your password here!</div>
+        </div>
+
+        <button type="submit" class="btn btn-dark">Submit</button>
     </form>
-    <p><a href="/logout">Logout</a></p>
-    <p><a href="/products">Products page</a></p>
-</body>
-</html>
+</div>
+
+
+{% endblock %}
+
+
+

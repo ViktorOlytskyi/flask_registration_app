@@ -1,26 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    <form method="POST" action="/login">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Login">
-    </form>
-    <p>Don't have an account? <a href="/register">Register</a></p>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<h1>Login</h1>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+<form method="POST" action="/login">
+    <label class="form-label" for="username">Username:</label>
+    <input class="form-control" type="text" id="username" name="username" required><br>
+    <label class="form-label" for="password">Password:</label>
+    <input class="form-control" type="password" id="password" name="password" required><br>
+    <input class="btn btn-dark" type="submit" value="Login">
+</form>
+<p>Don't have an account? <a href="/register">Register</a></p>
+{% endblock %}
+
+
+
+

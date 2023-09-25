@@ -1,59 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Products</title>
-</head>
-<body>
-    <h1>Products</h1>
+{% extends "base.html" %}
 
-    <div>
-        <h2>Create a New Product</h2>
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<h1>Products</h1>
+
+<div>
+    <h2>Create a New Product</h2>
+
+    <div class="mb-3">
         <form method="POST" action="{{ url_for('products') }}" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div>
-                {{ form.name.label }} {{ form.name(size=20) }}
+                {{ form.name.label(class="form-label") }} {{ form.name(class="form-control",size=20) }}
             </div>
             <div>
-                {{ form.description.label }} {{ form.description(rows=4) }}
+                {{ form.description.label(class="form-label") }} {{ form.description(class="form-control", rows=4) }}
             </div>
             <div>
-                {{ form.image.label }} {{ form.image }}
+                {{ form.image.label(class="form-label") }} {{ form.image(class="form-control") }}
             </div>
             <div>
-                {{ form.submit() }}
+                {{ form.submit(class="btn btn-dark") }}
             </div>
         </form>
     </div>
 
-    <hr>
+</div>
 
-    <div>
-        <h2>Your Products</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Image</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
-                <tr>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.description }}</td>
-                    <td>
-                        {% if product.image %}
-                            <img src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}" width="100">
-                        {% else %}
-                            No image
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</body>
-</html>
+<hr>
+
+<div>
+    <h2>Your Products</h2>
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Image</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.description }}</td>
+            <td>
+                {% if product.image %}
+                <img src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}"
+                     width="100">
+                {% else %}
+                No image
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+
+
+
