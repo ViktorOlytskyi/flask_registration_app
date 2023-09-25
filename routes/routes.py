@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from flask_uploads import UploadNotAllowed
+# from flask_uploads import UploadNotAllowed
 
 from app import app, db
 from forms.forms import ProductForm
@@ -29,7 +29,7 @@ def products():
                 filename = form.image.data.filename
                 form.image.data.save('uploads/' + filename)
                 product.image = filename
-            except UploadNotAllowed:
+            except :
                 flash('Invalid file format. Please upload an image.', 'danger')
                 return redirect(url_for('products'))
 
