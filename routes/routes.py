@@ -1,10 +1,10 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-# from flask_uploads import UploadNotAllowed
+
 
 from app import app, db
 from forms.forms import ProductForm
-from models.models import User, Product
+from models.models import User, Product, Order
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -12,10 +12,58 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+@app.route('/add_to_cart/<int:product_id>', methods=['POST'])
+@login_required
+def add_to_cart(product_id):
+    quantity = request.form.get('quantity', 1, type=int)
+    product = Product.query.get(product_id)
+    # Додати товар до кошика користувача у сесії
+    cart = session.get('cart', {})
+    cart_item = {
+        'name': product.name,
+        'description': product.description,
+        'quantity': cart.get(product_id, 0) + quantity
+    }
+    cart[product_id] = cart_item
+    session['cart'] = cart
+
+    flash('Product added to cart', 'success')
+    return redirect(url_for('products'))
+
+@app.route('/cart')
+@login_required
+def view_cart():
+    # Отримати кошик користувача з сесії та відобразити його
+    cart = session.get('cart', {})
+    return render_template('cart.html', cart=cart)
+
+@app.route('/checkout', methods=['GET', 'POST'])
+@login_required
+def checkout():
+    cart = session.get('cart', {})
+    if request.method == 'POST':
+        cart = session.get('cart', {})
+        for product_id, prod in cart.items():
+            product = Product.query.get(product_id)
+            if product:
+                order = Order(user_id=current_user.id, product_id=product_id, quantity=prod["quantity"])
+                db.session.add(order)
+        db.session.commit()
+        session['cart'] = {}
+        flash('Order placed successfully', 'success')
+        return redirect(url_for('view_orders'))
+    return render_template('checkout.html', cart=cart)
+
+@app.route('/my_orders')
+@login_required
+def view_orders():
+    orders = Order.query.filter_by(user_id=current_user.id).all()
+    return render_template('my_orders.html', orders=orders)
 
 @app.route('/products', methods=['GET', 'POST'])
 @login_required
 def products():
+    cart = session.get('cart', {})
     form = ProductForm()
     if form.validate_on_submit():
         product = Product(
@@ -39,7 +87,7 @@ def products():
         return redirect(url_for('products'))
 
     products = Product.query.filter_by(user_id=current_user.id).all()
-    return render_template('products.html', form=form, products=products, user=current_user)
+    return render_template('products.html', form=form, products=products, user=current_user, cart=cart)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -65,12 +113,13 @@ def logout():
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def profile():
+    cart = session.get('cart', {})
     if request.method == 'POST':
         new_password = request.form['new_password']
         current_user.set_password(new_password)
         db.session.commit()
         flash('Password updated successfully', 'success')
-    return render_template('profile.html', user=current_user)
+    return render_template('profile.html', user=current_user, cart=cart)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

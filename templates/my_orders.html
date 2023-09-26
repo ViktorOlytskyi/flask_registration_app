@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<h1>My Orders</h1>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+<ul>
+    {% for order in orders %}
+    <li>Order ID: {{ order.id }}</li>
+    <ul>
+        <li>Product: {{ order.product.name }}</li>
+        <li>Quantity: {{ order.quantity }}</li>
+    </ul>
+    {% endfor %}
+</ul>
+{% endblock %}

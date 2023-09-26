@@ -23,12 +23,17 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/products">Products</a>
                 </li>
-
+                {% if cart %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/cart">Cart</a>
+                </li>
+                {% endif %}
             </ul>
+
             {% if user %}
             <div class="position-absolute top-50 end-0 translate-middle-y">
 
-                <span >Welcome, {{ user.username }}!</span>
+                <span>Welcome, {{ user.username }}!</span>
 
                 <a href="/logout" class="btn btn-danger mr-2">X</a>
             </div>
