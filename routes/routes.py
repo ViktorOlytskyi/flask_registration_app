@@ -22,7 +22,7 @@ def add_to_cart(product_id):
     cart_item = {
         'name': product.name,
         'description': product.description,
-        'quantity': cart.get(product_id, 0) + quantity
+        'quantity': 1
     }
     cart[product_id] = cart_item
     session['cart'] = cart
