@@ -13,13 +13,15 @@
 </ul>
 {% endif %}
 {% endwith %}
+{% for order in orders %}
+<h2>Order ID: {{ order.id }}</h2>
 <ul>
-    {% for order in orders %}
-    <li>Order ID: {{ order.id }}</li>
-    <ul>
-        <li>Product: {{ order.product.name }}</li>
-        <li>Quantity: {{ order.quantity }}</li>
-    </ul>
+    {% for order_item in order.order_items %}
+    <li>
+        Product: {{ order_item.product.name }}
+        Quantity: {{ order_item.quantity }}
+    </li>
     {% endfor %}
 </ul>
+{% endfor %}
 {% endblock %}

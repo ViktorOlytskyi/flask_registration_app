@@ -6,10 +6,15 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref='orders')
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
-    product = db.relationship('Product', backref='orders')
-    quantity = db.Column(db.Integer)
+    order_items = db.relationship('OrderItem', backref='order_items')
 
+class OrderItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
+    order_rel = db.relationship('Order', backref='order')
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    product = db.relationship('Product')
+    quantity = db.Column(db.Integer)
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -4,7 +4,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 from app import app, db
 from forms.forms import ProductForm
-from models.models import User, Product, Order
+from models.models import User, Product, Order, OrderItem
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -17,7 +17,6 @@ def load_user(user_id):
 def add_to_cart(product_id):
     quantity = request.form.get('quantity', 1, type=int)
     product = Product.query.get(product_id)
-    # Додати товар до кошика користувача у сесії
     cart = session.get('cart', {})
     cart_item = {
         'name': product.name,
@@ -26,14 +25,12 @@ def add_to_cart(product_id):
     }
     cart[product_id] = cart_item
     session['cart'] = cart
-
     flash('Product added to cart', 'success')
     return redirect(url_for('products'))
 
 @app.route('/cart')
 @login_required
 def view_cart():
-    # Отримати кошик користувача з сесії та відобразити його
     cart = session.get('cart', {})
     return render_template('cart.html', cart=cart)
 
@@ -43,11 +40,16 @@ def checkout():
     cart = session.get('cart', {})
     if request.method == 'POST':
         cart = session.get('cart', {})
-        for product_id, prod in cart.items():
+        order = Order(user_id=current_user.id)
+        db.session.add(order)
+        db.session.commit()
+
+        for product_id, cart_item in cart.items():
             product = Product.query.get(product_id)
             if product:
-                order = Order(user_id=current_user.id, product_id=product_id, quantity=prod["quantity"])
-                db.session.add(order)
+                order_item = OrderItem(order_id=order.id, product=product, quantity=cart_item['quantity'])
+                db.session.add(order_item)
+
         db.session.commit()
         session['cart'] = {}
         flash('Order placed successfully', 'success')
